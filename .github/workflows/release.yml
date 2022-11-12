@@ -3,7 +3,7 @@ name: release
 on:
   push:
     tags:
-      - '*'
+      - "*"
 
 jobs:
   release:
@@ -27,13 +27,15 @@ jobs:
       - name: Copy README.md
         run: |
           cp ./README.md ./packages/solid-aper/README.md
+          cp ./README.md ./packages/aper/README.md
 
       - name: Change version
         run: |
           version=$(git describe --abbrev=0 --tags)
           sed -i -e "s/0.0.0/$version/g" packages/solid-aper/package.json
+          sed -i -e "s/0.0.0/$version/g" packages/aper/package.json
           cat packages/solid-aper/package.json
-        
+
       - uses: pnpm/action-setup@v2.2.2
         name: Install pnpm
         id: pnpm-install
@@ -44,6 +46,8 @@ jobs:
       - name: Build
         run: |
           pnpm build
+          pnpm aper:build
+
       - name: Generate changelog
         run: |
           npx changelogithub # or changelogithub@0.12 if ensure the stable result
@@ -54,6 +58,8 @@ jobs:
         run: |
           echo "//registry.npmjs.org/:_authToken=${NODE_AUTH_TOKEN}" > ~/.npmrc
           cd ./packages/solid-aper
+          pnpm publish --no-git-checks
+          cd ../aper
           pnpm publish --no-git-checks
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}

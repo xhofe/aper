@@ -1,0 +1,18 @@
+{
+  "name": "solid-template",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "site": "pnpm --filter=site dev",
+    "site:build": "pnpm --filter=site build",
+    "build": "pnpm --filter=solid-aper build",
+    "dev": "pnpm --filter=solid-aper dev",
+    "aper:build": "pnpm --filter=aper build",
+    "aper:dev": "pnpm --filter=aper dev"
+  },
+  "keywords": [],
+  "author": "Xhofe",
+  "license": "ISC"
+}

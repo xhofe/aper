@@ -1,0 +1,36 @@
+{
+  "name": "aper",
+  "version": "0.0.0",
+  "description": "",
+  "type": "module",
+  "files": [
+    "dist"
+  ],
+  "main": "./dist/aper.cjs",
+  "module": "./dist/aper.js",
+  "exports": {
+    ".": {
+      "import": "./dist/aper.js",
+      "require": "./dist/aper.cjs"
+    }
+  },
+  "types": "./dist/index.d.ts",
+  "scripts": {
+    "start": "vite",
+    "dev": "vite",
+    "build": "vite build",
+    "serve": "vite preview"
+  },
+  "license": "MIT",
+  "devDependencies": {
+    "@types/node": "^18.7.8",
+    "typescript": "^4.7.4",
+    "vite": "^3.0.9",
+    "vite-plugin-dts": "^1.4.1",
+    "vite-plugin-solid": "^2.3.0"
+  },
+  "dependencies": {
+    "solid-js": "^1.4.8",
+    "solid-aper": "workspace:*"
+  }
+}

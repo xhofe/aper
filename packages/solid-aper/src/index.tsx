@@ -1,5 +1,5 @@
-const Aper = () => {
-  return <h1>solid-aper</h1>;
-};
+export * from "./types"
+export * from "./components"
+import { Aper } from "./components"
 
-export default Aper;
+export default Aper

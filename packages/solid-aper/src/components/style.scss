@@ -1,0 +1,83 @@
+.aper {
+  --aper-color: #6366f1;
+  --hover-color: #84858d2e;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  &-list-lyric {
+    flex: 1 1 0%;
+    height: 0;
+    display: flex;
+    flex-wrap: wrap;
+    .aper-list {
+      height: 100%;
+      width: 300px;
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+      overflow-y: auto;
+      // border-right: 2px solid var(--aper-color);
+      &-item {
+        cursor: pointer;
+        padding: 4px;
+        border-radius: 6px;
+        &:hover {
+          background-color: var(--hover-color);
+        }
+        &-name {
+          overflow: hidden;
+        }
+        &-artist {
+          font-size: small;
+        }
+      }
+      &-playing {
+        background-color: var(--aper-color);
+        color: white;
+        &:hover {
+          background-color: var(--aper-color);
+        }
+      }
+    }
+    .aper-lyric {
+      flex: 1;
+    }
+  }
+  &-control {
+    height: 64px;
+  }
+  &-btn {
+    &:active {
+      transform: scale(0.92);
+      transition: 0.2s;
+    }
+  }
+  ::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+  
+  ::-webkit-scrollbar-corner,
+  ::-webkit-scrollbar-track {
+    background-color: #e2e2e2;
+    border-radius: 2px;
+  }
+  
+  ::-webkit-scrollbar-thumb {
+    border-radius: 2px;
+    background-color: rgba(0, 0, 0, 0.3);
+  }
+  
+  ::-webkit-scrollbar-button:vertical {
+    display: none;
+  }
+  
+  ::-webkit-scrollbar-thumb:vertical:hover {
+    background-color: rgba(0, 0, 0, 0.35);
+  }
+  
+  ::-webkit-scrollbar-thumb:vertical:active {
+    background-color: rgba(0, 0, 0, 0.38);
+  }  
+}

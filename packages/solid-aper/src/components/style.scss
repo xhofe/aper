@@ -6,19 +6,20 @@
   display: flex;
   flex-direction: column;
   &-list-lyric {
-    flex: 1 1 0%;
+    flex: 1;
     height: 0;
     display: flex;
     flex-wrap: wrap;
     .aper-list {
       height: 100%;
-      width: 300px;
+      width: min(300px, 30%);
       display: flex;
       flex-direction: column;
       gap: 2px;
-      overflow-y: auto;
+      overflow-y: scroll;
       // border-right: 2px solid var(--aper-color);
       &-item {
+        width: calc(100% - 8px);
         cursor: pointer;
         padding: 4px;
         border-radius: 6px;
@@ -26,7 +27,9 @@
           background-color: var(--hover-color);
         }
         &-name {
+          width: 100%;
           overflow: hidden;
+          font-weight: bold;
         }
         &-artist {
           font-size: small;
@@ -45,7 +48,7 @@
     }
   }
   &-control {
-    height: 64px;
+    height: 84px;
   }
   &-btn {
     &:active {
@@ -57,27 +60,27 @@
     width: 6px;
     height: 6px;
   }
-  
+
   ::-webkit-scrollbar-corner,
   ::-webkit-scrollbar-track {
     background-color: #e2e2e2;
     border-radius: 2px;
   }
-  
+
   ::-webkit-scrollbar-thumb {
     border-radius: 2px;
     background-color: rgba(0, 0, 0, 0.3);
   }
-  
+
   ::-webkit-scrollbar-button:vertical {
     display: none;
   }
-  
+
   ::-webkit-scrollbar-thumb:vertical:hover {
     background-color: rgba(0, 0, 0, 0.35);
   }
-  
+
   ::-webkit-scrollbar-thumb:vertical:active {
     background-color: rgba(0, 0, 0, 0.38);
-  }  
+  }
 }

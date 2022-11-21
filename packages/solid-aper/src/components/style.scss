@@ -45,6 +45,34 @@
     }
     .aper-lyric {
       flex: 1;
+      width: 100%;
+      height: 100%;
+      display: flex;
+      align-items: center;
+      flex-direction: column;
+      gap: 8px;
+      overflow-y: scroll;
+      transition: all 0.3s ease;
+      &-none {
+        width: 100%;
+        height: 100%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        font-size: 2rem;
+        font-weight: bold;
+        color: var(--aper-color);
+      }
+      &-item {
+        font-size: large;
+        opacity: 0.7;
+        &-active {
+          color: var(--aper-color);
+          font-weight: bold;
+          font-size: x-large;
+          opacity: 1;
+        }
+      }
     }
   }
   &-control {

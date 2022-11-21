@@ -3,6 +3,7 @@ import clsx from "clsx"
 import { Audio } from "../types"
 import { List } from "./List"
 import { createSignal } from "solid-js"
+import { Lyric } from "./Lyric"
 
 export interface AperProps {
   audios: Audio[]
@@ -23,6 +24,7 @@ export const Aper = (props: AperProps) => {
     setPlayIndex(index)
     props.onPlayIndexChange?.(index)
   }
+  const [current, setCurrent] = createSignal(50)
   return (
     <div class={clsx(props.class, "aper")}>
       <div class="aper-list-lyric">
@@ -33,7 +35,9 @@ export const Aper = (props: AperProps) => {
             onPlayIndexChange={onPlayIndexChange}
           />
         </div>
-        <div class="aper-lyric"></div>
+        <div class="aper-lyric">
+          <Lyric {...props.audios[playIndex()]} current={current()} />
+        </div>
       </div>
       <div class="aper-control"></div>
     </div>

@@ -31,7 +31,9 @@
     "vite-plugin-solid": "^2.3.0"
   },
   "dependencies": {
+    "@types/howler": "^2.2.7",
     "clsx": "^1.2.1",
+    "howler": "^2.2.3",
     "lrc-parser-ts": "^1.0.3",
     "solid-js": "^1.4.8"
   }

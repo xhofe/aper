@@ -4,6 +4,8 @@ import { Audio } from "../types"
 import { List } from "./List"
 import { createSignal } from "solid-js"
 import { Lyric } from "./Lyric"
+import { Howl } from "howler"
+import { Player } from "../core/player"
 
 export interface AperProps {
   audios: Audio[]
@@ -25,6 +27,11 @@ export const Aper = (props: AperProps) => {
     props.onPlayIndexChange?.(index)
   }
   const [current, setCurrent] = createSignal(50)
+  const player = new Player({
+    audios: props.audios,
+  })
+  player.play(playIndex())
+
   return (
     <div class={clsx(props.class, "aper")}>
       <div class="aper-list-lyric">

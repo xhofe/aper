@@ -26,8 +26,10 @@ importers:
 
   packages/solid-aper:
     specifiers:
+      '@types/howler': ^2.2.7
       '@types/node': ^18.7.8
       clsx: ^1.2.1
+      howler: ^2.2.3
       lrc-parser-ts: ^1.0.3
       sass: ^1.56.1
       solid-js: ^1.4.8
@@ -36,7 +38,9 @@ importers:
       vite-plugin-dts: ^1.4.1
       vite-plugin-solid: ^2.3.0
     dependencies:
+      '@types/howler': 2.2.7
       clsx: 1.2.1
+      howler: 2.2.3
       lrc-parser-ts: 1.0.3
       solid-js: 1.4.8
     devDependencies:
@@ -526,6 +530,10 @@ packages:
   /@types/argparse/1.0.38:
     resolution: {integrity: sha512-ebDJ9b0e702Yr7pWgB0jzm+CX4Srzz8RcXtLJDJB+BSccqMa36uyH/zUsSYao5+BD1ytv3k3rPYCq4mAE1hsXA==}
     dev: true
+
+  /@types/howler/2.2.7:
+    resolution: {integrity: sha512-PEZldwZqJJw1PWRTpupyC7ajVTZA8aHd8nB/Y0n6zRZi5u8ktYDntsHj13ltEiBRqWwF06pASxBEvCTxniG8eA==}
+    dev: false
 
   /@types/node/12.20.24:
     resolution: {integrity: sha512-yxDeaQIAJlMav7fH5AQqPH1u8YIuhYJXYBzxaQ4PifsU0GDO38MSdmEDeRlIxrKbC6NbEaaEHDanWb+y30U8SQ==}
@@ -1043,6 +1051,10 @@ packages:
     dependencies:
       function-bind: 1.1.1
     dev: true
+
+  /howler/2.2.3:
+    resolution: {integrity: sha512-QM0FFkw0LRX1PR8pNzJVAY25JhIWvbKMBFM4gqk+QdV+kPXOhleWGCB6AiAF/goGjIHK2e/nIElplvjQwhr0jg==}
+    dev: false
 
   /html-entities/2.3.2:
     resolution: {integrity: sha512-c3Ab/url5ksaT0WyleslpBEthOzWhrjQbg75y7XUsfSzi3Dgzt0l8w5e7DylRn15MTlMMD58dTfzddNS2kcAjQ==}

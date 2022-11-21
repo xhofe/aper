@@ -22,6 +22,7 @@ const App: Component = () => {
         }}
       >
         <Aper
+          // autoplay
           audios={[
             {
               name: "南山忆",

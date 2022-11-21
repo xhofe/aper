@@ -43,7 +43,7 @@ export const Lyric = (
     console.log(props.current)
     const active = document.querySelector(".aper-lyric-item-active")
     if (active) {
-      active.scrollIntoView({ block: "center" })
+      active.scrollIntoView({ block: "center", behavior: "smooth" })
     }
   })
   return (

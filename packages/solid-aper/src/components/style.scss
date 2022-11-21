@@ -50,7 +50,7 @@
       display: flex;
       align-items: center;
       flex-direction: column;
-      gap: 8px;
+      gap: 14px;
       overflow-y: scroll;
       transition: all 0.3s ease;
       &-none {
@@ -66,10 +66,12 @@
       &-item {
         font-size: large;
         opacity: 0.7;
+        text-align: center;
+        transition: all 0.3s ease;
         &-active {
           color: var(--aper-color);
           font-weight: bold;
-          font-size: x-large;
+          font-size: xx-large;
           opacity: 1;
         }
       }

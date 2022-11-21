@@ -23,6 +23,7 @@ const App: Component = () => {
       >
         <Aper
           // autoplay
+          debug
           audios={[
             {
               name: "南山忆",

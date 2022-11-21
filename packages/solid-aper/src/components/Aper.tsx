@@ -2,9 +2,8 @@ import "./style.scss"
 import clsx from "clsx"
 import { Audio } from "../types"
 import { List } from "./List"
-import { createSignal } from "solid-js"
+import { createEffect, createSignal } from "solid-js"
 import { Lyric } from "./Lyric"
-import { Howl } from "howler"
 import { Player } from "../core/player"
 
 export interface AperProps {
@@ -18,20 +17,27 @@ export interface AperProps {
   class?: string
   mainColor?: string
   onPlayIndexChange?: (index: number) => void
+  debug?: boolean
 }
 
 export const Aper = (props: AperProps) => {
+  const player = new Player({
+    audios: props.audios,
+    debug: props.debug,
+  })
   const [playIndex, setPlayIndex] = createSignal(props.defaultPlayIndex ?? 0)
   const onPlayIndexChange = (index: number) => {
     setPlayIndex(index)
+    player.skipTo(index)
     props.onPlayIndexChange?.(index)
   }
-  const [current, setCurrent] = createSignal(50)
-  const player = new Player({
-    audios: props.audios,
+  const [seek, setSeek] = createSignal(0)
+  player.onStep((e) => {
+    setSeek(e.seek)
   })
-  player.play(playIndex())
-
+  createEffect(() => {
+    console.log(seek())
+  })
   return (
     <div class={clsx(props.class, "aper")}>
       <div class="aper-list-lyric">
@@ -43,10 +49,25 @@ export const Aper = (props: AperProps) => {
           />
         </div>
         <div class="aper-lyric">
-          <Lyric {...props.audios[playIndex()]} current={current()} />
+          <Lyric {...props.audios[playIndex()]} seek={seek()} />
         </div>
       </div>
-      <div class="aper-control"></div>
+      <div class="aper-control">
+        <button
+          onClick={() => {
+            console.log(seek())
+          }}
+        >
+          {seek()}
+        </button>
+        <button
+          onClick={() => {
+            player.play()
+          }}
+        >
+          play
+        </button>
+      </div>
     </div>
   )
 }

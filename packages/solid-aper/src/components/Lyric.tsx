@@ -1,4 +1,4 @@
-import { createEffect, createSignal, For, Show } from "solid-js"
+import { createEffect, createMemo, createSignal, For, Show } from "solid-js"
 import { Audio } from "../types"
 import lrcParser from "lrc-parser-ts"
 import clsx from "clsx"
@@ -17,9 +17,9 @@ type Lyrics = {
   scripts: Array<Sentence>
 }
 
-export const Lyric = (
-  props: Pick<Audio, "lrc" | "lyric"> & { current: number }
-) => {
+export type LyricProps = Pick<Audio, "lrc" | "lyric"> & { seek: number }
+
+export const Lyric = (props: LyricProps) => {
   const [lyrics, setLyrics] = createSignal<Lyrics>()
   const init = async () => {
     setLyrics(undefined)
@@ -39,12 +39,24 @@ export const Lyric = (
   createEffect(() => {
     init()
   })
-  createEffect(() => {
-    console.log(props.current)
+  const scrollActive = () => {
     const active = document.querySelector(".aper-lyric-item-active")
     if (active) {
       active.scrollIntoView({ block: "center", behavior: "smooth" })
     }
+  }
+  const activeIndex = createMemo(() => {
+    if (!lyrics()) {
+      return -1
+    }
+    const index = lyrics()!.scripts.findIndex((item) => {
+      return item.start <= props.seek && item.end >= props.seek
+    })
+    return index
+  })
+  createEffect(() => {
+    activeIndex()
+    scrollActive()
   })
   return (
     <Show
@@ -52,11 +64,10 @@ export const Lyric = (
       fallback={<div class="aper-lyric-none">No lyric yet.</div>}
     >
       <For each={lyrics()!.scripts}>
-        {(item) => (
+        {(item, i) => (
           <div
             class={clsx("aper-lyric-item", {
-              "aper-lyric-item-active":
-                item.start <= props.current && item.end >= props.current,
+              "aper-lyric-item-active": activeIndex() === i(),
             })}
           >
             {item.text}

@@ -1,6 +1,6 @@
-import { Howl } from "howler"
-import { Audio } from "../types"
-import { formatTime } from "./util"
+import { Howl, HowlCallback, HowlErrorCallback } from "howler"
+import { Audio } from ".."
+import { formatTime } from ".."
 
 export interface PlayerOptions {
   audios: Audio[]
@@ -13,6 +13,13 @@ export class Player {
   debug: boolean
   playlist: Audio[]
   stepEvents: StepEvent[] = []
+  howlEvents: {
+    [event: string]: {
+      callback: HowlCallback | HowlErrorCallback
+      once: boolean
+      id?: number
+    }[]
+  } = {}
   interval?: number
   timeout: number = 1000
   index: number = 0
@@ -45,9 +52,7 @@ export class Player {
           self.resetInterval()
         },
         onload() {},
-        onend() {
-          self.skip("next")
-        },
+        onend() {},
         onpause() {},
         onstop() {},
         onseek() {
@@ -55,8 +60,16 @@ export class Player {
           self.resetInterval()
         },
       })
+      for (const event in self.howlEvents) {
+        self.howlEvents[event].forEach((e) => {
+          if (e.once) {
+            sound.once(event, e.callback, e.id)
+          } else {
+            sound.on(event, e.callback, e.id)
+          }
+        })
+      }
     }
-
     // Begin playing the sound.
     !sound.playing() && sound.play()
 
@@ -184,5 +197,134 @@ export class Player {
   }
   offStep(e: StepEvent) {
     this.stepEvents = this.stepEvents.filter((f) => f !== e)
+  }
+  on(event: "load", callback: () => void, id?: number): this
+  on(
+    event: "loaderror" | "playerror",
+    callback: HowlErrorCallback,
+    id?: number
+  ): this
+  on(
+    event:
+      | "play"
+      | "end"
+      | "pause"
+      | "stop"
+      | "mute"
+      | "volume"
+      | "rate"
+      | "seek"
+      | "fade"
+      | "unlock",
+    callback: HowlCallback,
+    id?: number
+  ): this
+  on(
+    event: string,
+    callback: HowlCallback | HowlErrorCallback,
+    id?: number
+  ): this
+  on(
+    event: string,
+    callback: HowlCallback | HowlErrorCallback,
+    id?: number
+  ): this {
+    this.debug && console.log("on", event)
+    var self = this
+    self.playlist[self.index].howl?.on(event, callback, id)
+    if (!self.howlEvents[event]) {
+      self.howlEvents[event] = []
+    }
+    self.howlEvents[event].push({
+      callback,
+      id,
+      once: false,
+    })
+    return self
+  }
+  once(event: "load", callback: () => void, id?: number): this
+  once(
+    event: "loaderror" | "playerror",
+    callback: HowlErrorCallback,
+    id?: number
+  ): this
+  once(
+    event:
+      | "play"
+      | "end"
+      | "pause"
+      | "stop"
+      | "mute"
+      | "volume"
+      | "rate"
+      | "seek"
+      | "fade"
+      | "unlock",
+    callback: HowlCallback,
+    id?: number
+  ): this
+  once(
+    event: string,
+    callback: HowlCallback | HowlErrorCallback,
+    id?: number
+  ): this
+  once(
+    event: string,
+    callback: HowlCallback | HowlErrorCallback,
+    id?: number
+  ): this {
+    this.debug && console.log("once", event)
+    var self = this
+    self.playlist[self.index].howl?.once(event, callback, id)
+    if (!self.howlEvents[event]) {
+      self.howlEvents[event] = []
+    }
+    self.howlEvents[event].push({
+      callback,
+      id,
+      once: true,
+    })
+    return self
+  }
+  off(event: "load", callback?: () => void, id?: number): this
+  off(
+    event: "loaderror" | "playerror",
+    callback?: HowlErrorCallback,
+    id?: number
+  ): this
+  off(
+    event:
+      | "play"
+      | "end"
+      | "pause"
+      | "stop"
+      | "mute"
+      | "volume"
+      | "rate"
+      | "seek"
+      | "fade"
+      | "unlock",
+    callback?: HowlCallback,
+    id?: number
+  ): this
+  off(
+    event?: string,
+    callback?: HowlCallback | HowlErrorCallback,
+    id?: number
+  ): this
+  off(
+    event?: string,
+    callback?: HowlCallback | HowlErrorCallback,
+    id?: number
+  ): this {
+    this.debug && console.log("off", event)
+    var self = this
+    self.playlist[self.index].howl?.off(event, callback, id)
+    if (event) {
+      self.howlEvents[event] = self.howlEvents[event].filter((e) => {
+        return e.callback !== callback && e.id !== id
+      })
+    }
+    return self
   }
 }

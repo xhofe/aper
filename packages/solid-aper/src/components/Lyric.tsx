@@ -1,5 +1,5 @@
 import { createEffect, createMemo, createSignal, For, Show } from "solid-js"
-import { Audio } from "../types"
+import { Audio } from ".."
 import lrcParser from "lrc-parser-ts"
 import clsx from "clsx"
 

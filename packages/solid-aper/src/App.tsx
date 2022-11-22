@@ -1,5 +1,5 @@
 import type { Component } from "solid-js"
-import Aper from "."
+import { Aper } from "."
 
 const App: Component = () => {
   return (

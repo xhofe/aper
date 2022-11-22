@@ -1,6 +1,6 @@
 import clsx from "clsx"
 import { For } from "solid-js"
-import { Audio } from "../types"
+import { Audio } from ".."
 
 export interface ListProps {
   audios: Audio[]

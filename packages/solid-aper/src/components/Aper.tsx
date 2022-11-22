@@ -1,10 +1,9 @@
 import "./style.scss"
-import clsx from "clsx"
-import { Audio } from "../types"
-import { List } from "./List"
 import { createEffect, createSignal } from "solid-js"
-import { Lyric } from "./Lyric"
-import { Player } from "../core/player"
+import clsx from "clsx"
+import { Audio } from ".."
+import { List, Lyric } from "."
+import { Player } from ".."
 
 export interface AperProps {
   audios: Audio[]
@@ -20,6 +19,7 @@ export interface AperProps {
   debug?: boolean
 }
 
+// only show interface, do not handle logic
 export const Aper = (props: AperProps) => {
   const player = new Player({
     audios: props.audios,
@@ -34,6 +34,15 @@ export const Aper = (props: AperProps) => {
   const [seek, setSeek] = createSignal(0)
   player.onStep((e) => {
     setSeek(e.seek)
+  })
+  const [status, setStatus] = createSignal<"play" | "pause" | "loading">(
+    "pause"
+  )
+  player.on("play", () => {
+    setStatus("play")
+  })
+  player.on("pause", () => {
+    setStatus("pause")
   })
   createEffect(() => {
     console.log(seek())
@@ -62,10 +71,14 @@ export const Aper = (props: AperProps) => {
         </button>
         <button
           onClick={() => {
-            player.play()
+            if (status() === "play") {
+              player.pause()
+            } else {
+              player.play()
+            }
           }}
         >
-          play
+          {status()}
         </button>
       </div>
     </div>

@@ -1,6 +1,7 @@
 /* @refresh reload */
-import Aper from ".";
+import Aper from "."
 
 const ap = new Aper({
+  audios: [],
   container: document.getElementById("root") as HTMLElement,
-});
+})

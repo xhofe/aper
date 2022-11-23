@@ -12,7 +12,8 @@
     ".": {
       "import": "./dist/solid-aper.js",
       "require": "./dist/solid-aper.cjs"
-    }
+    },
+    "./dist/style.css": "./dist/style.css"
   },
   "types": "./dist/index.d.ts",
   "scripts": {

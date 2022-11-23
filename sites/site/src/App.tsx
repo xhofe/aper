@@ -1,5 +1,6 @@
 import type { Component } from "solid-js"
 import { Aper } from "solid-aper"
+import "solid-aper/dist/style.css"
 
 const App: Component = () => {
   return (

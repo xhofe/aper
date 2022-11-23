@@ -5,13 +5,16 @@ import { formatTime } from ".."
 export interface PlayerOptions {
   audios: Audio[]
   debug?: boolean
+  // loop?: "list" | "random" | "one"
 }
 
 type StepEvent = (e: { seek: number; percent: number }) => void
+type SkipEvent = (e: { index: number; audio: Audio; howl: Howl }) => void
 
 export class Player {
   debug: boolean
   playlist: Audio[]
+  options: PlayerOptions
   stepEvents: StepEvent[] = []
   howlEvents: {
     [event: string]: {
@@ -26,6 +29,7 @@ export class Player {
   constructor(options: PlayerOptions) {
     this.playlist = options.audios
     this.debug = options.debug ?? false
+    this.options = options
   }
   play(index?: number) {
     this.debug && console.log("play", index)
@@ -52,7 +56,19 @@ export class Player {
           self.resetInterval()
         },
         onload() {},
-        onend() {},
+        onend() {
+          // switch (self.options.loop) {
+          //   case "list":
+          //     self.skip("next")
+          //     break
+          //   case "random":
+          //     self.skipTo(Math.floor(Math.random() * self.playlist.length))
+          //     break
+          //   case "one":
+          //     self.skipTo(self.index)
+          //     break
+          // }
+        },
         onpause() {},
         onstop() {},
         onseek() {
@@ -95,7 +111,7 @@ export class Player {
    * Skip to the next or previous track.
    * @param  {String} direction 'next' or 'prev'.
    */
-  skip(direction: "prev" | "next") {
+  skip(direction: "prev" | "next", callback?: SkipEvent) {
     this.debug && console.log("skip", direction)
     var self = this
 
@@ -113,24 +129,28 @@ export class Player {
       }
     }
 
-    self.skipTo(index)
+    self.skipTo(index,callback)
   }
 
   /**
    * Skip to a specific track based on its playlist index.
    * @param  {Number} index Index in the playlist.
    */
-  skipTo(index: number) {
+  skipTo(index: number,callback?: SkipEvent) {
     this.debug && console.log("skipTo", index)
     var self = this
 
     // Stop the current track.
     self.playlist[self.index].howl?.stop()
 
-    // Reset progress.
-
     // Play the new track.
     self.play(index)
+
+    callback?.({
+      index,
+      audio: self.playlist[index],
+      howl: self.playlist[index].howl!,
+    })
   }
 
   /**

@@ -1,5 +1,5 @@
 import "./style.scss"
-import { createEffect, createSignal } from "solid-js"
+import { createStore } from "solid-js/store"
 import clsx from "clsx"
 import { Audio } from ".."
 import { List, Lyric } from "."
@@ -9,14 +9,22 @@ export interface AperProps {
   audios: Audio[]
   defaultPlayIndex?: number
   defaultCover?: string
-  loop?: "all" | "one" | "none"
-  order?: "list" | "random"
+  loop?: "list" | "random" | "one"
   autoplay?: boolean
   defaultVolume?: number
   class?: string
   mainColor?: string
   onPlayIndexChange?: (index: number) => void
   debug?: boolean
+  initialVolume?: number
+}
+
+type Store = {
+  playIndex: number
+  seek: number
+  volume: number
+  duration: number
+  status: "play" | "pause" | "loading"
 }
 
 // only show interface, do not handle logic
@@ -25,27 +33,44 @@ export const Aper = (props: AperProps) => {
     audios: props.audios,
     debug: props.debug,
   })
-  const [playIndex, setPlayIndex] = createSignal(props.defaultPlayIndex ?? 0)
+  const [store, setStore] = createStore<Store>({
+    playIndex: props.defaultPlayIndex ?? 0,
+    seek: 0,
+    duration: 0,
+    status: "loading",
+    volume: props.initialVolume ?? 0.5,
+  })
   const onPlayIndexChange = (index: number) => {
-    setPlayIndex(index)
-    player.skipTo(index)
+    setStore("playIndex", index)
+    player.skipTo(index, ({ howl }) => {
+      setStore("duration", howl.duration())
+    })
     props.onPlayIndexChange?.(index)
   }
-  const [seek, setSeek] = createSignal(0)
   player.onStep((e) => {
-    setSeek(e.seek)
+    setStore("seek", e.seek)
   })
-  const [status, setStatus] = createSignal<"play" | "pause" | "loading">(
-    "pause"
-  )
   player.on("play", () => {
-    setStatus("play")
+    console.log("play")
+    setStore("status", "play")
   })
   player.on("pause", () => {
-    setStatus("pause")
+    setStore("status", "pause")
   })
-  createEffect(() => {
-    console.log(seek())
+  player.on("load", () => {
+    console.log("load")
+  })
+  player.on("end", () => {
+    switch (props.loop) {
+      case "list":
+        onPlayIndexChange((store.playIndex + 1) % props.audios.length)
+        break
+      case "random":
+        onPlayIndexChange(Math.floor(Math.random() * props.audios.length))
+        break
+      case "one":
+        onPlayIndexChange(store.playIndex)
+    }
   })
   return (
     <div class={clsx(props.class, "aper")}>
@@ -53,32 +78,32 @@ export const Aper = (props: AperProps) => {
         <div class="aper-list">
           <List
             audios={props.audios}
-            playIndex={playIndex()}
+            playIndex={store.playIndex}
             onPlayIndexChange={onPlayIndexChange}
           />
         </div>
         <div class="aper-lyric">
-          <Lyric {...props.audios[playIndex()]} seek={seek()} />
+          <Lyric {...props.audios[store.playIndex]} seek={store.seek} />
         </div>
       </div>
       <div class="aper-control">
         <button
           onClick={() => {
-            console.log(seek())
+            console.log(store.seek)
           }}
         >
-          {seek()}
+          {store.seek}
         </button>
         <button
           onClick={() => {
-            if (status() === "play") {
+            if (store.status === "play") {
               player.pause()
             } else {
               player.play()
             }
           }}
         >
-          {status()}
+          {store.status}
         </button>
       </div>
     </div>

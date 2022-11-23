@@ -2,20 +2,19 @@ import { Howl, HowlCallback, HowlErrorCallback } from "howler"
 import { Audio } from ".."
 import { formatTime } from ".."
 
+type StepEvent = (e: { seek: number; percent: number }) => void
+type PlayEvent = (e: { index: number; audio: Audio; howl: Howl }) => void
 export interface PlayerOptions {
   audios: Audio[]
   debug?: boolean
-  // loop?: "list" | "random" | "one"
+  onPlay?: PlayEvent
 }
-
-type StepEvent = (e: { seek: number; percent: number }) => void
-type SkipEvent = (e: { index: number; audio: Audio; howl: Howl }) => void
-
 export class Player {
   debug: boolean
   playlist: Audio[]
   options: PlayerOptions
   stepEvents: StepEvent[] = []
+  playEvents: PlayEvent[] = []
   howlEvents: {
     [event: string]: {
       callback: HowlCallback | HowlErrorCallback
@@ -30,6 +29,7 @@ export class Player {
     this.playlist = options.audios
     this.debug = options.debug ?? false
     this.options = options
+    options.onPlay && this.playEvents.push(options.onPlay)
   }
   play(index?: number) {
     this.debug && console.log("play", index)
@@ -49,26 +49,14 @@ export class Player {
         src: [data.url],
         html5: true, // Force to HTML5 so that the audio can stream in (best for large files).
         onplay() {
-          // Display the duration.
-          const duration = formatTime(Math.round(sound.duration()))
-
+          self.playEvents.forEach((e) =>
+            e({ index: index!, audio: data, howl: sound })
+          )
           // Start updating the progress of the track.
           self.resetInterval()
         },
         onload() {},
-        onend() {
-          // switch (self.options.loop) {
-          //   case "list":
-          //     self.skip("next")
-          //     break
-          //   case "random":
-          //     self.skipTo(Math.floor(Math.random() * self.playlist.length))
-          //     break
-          //   case "one":
-          //     self.skipTo(self.index)
-          //     break
-          // }
-        },
+        onend() {},
         onpause() {},
         onstop() {},
         onseek() {
@@ -111,8 +99,8 @@ export class Player {
    * Skip to the next or previous track.
    * @param  {String} direction 'next' or 'prev'.
    */
-  skip(direction: "prev" | "next", callback?: SkipEvent) {
-    this.debug && console.log("skip", direction)
+  skip(direction: "prev" | "next") {
+    this.debug && console.log("skip")
     var self = this
 
     // Get the next track based on the direction of the track.
@@ -129,14 +117,14 @@ export class Player {
       }
     }
 
-    self.skipTo(index,callback)
+    self.skipTo(index)
   }
 
   /**
    * Skip to a specific track based on its playlist index.
    * @param  {Number} index Index in the playlist.
    */
-  skipTo(index: number,callback?: SkipEvent) {
+  skipTo(index: number) {
     this.debug && console.log("skipTo", index)
     var self = this
 
@@ -145,12 +133,6 @@ export class Player {
 
     // Play the new track.
     self.play(index)
-
-    callback?.({
-      index,
-      audio: self.playlist[index],
-      howl: self.playlist[index].howl!,
-    })
   }
 
   /**
@@ -187,7 +169,6 @@ export class Player {
   resetInterval() {
     var self = this
     self.interval && clearInterval(self.interval)
-    clearInterval(self.interval)
     self.interval = window.setInterval(() => {
       self.step()
     }, self.timeout)

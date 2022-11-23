@@ -40,7 +40,7 @@ export const Lyric = (props: LyricProps) => {
     init()
   })
   const scrollActive = () => {
-    const active = document.querySelector(".aper-lyric-item-active")
+    const active = document.querySelector(".aper .list-lyric .lyric .active")
     if (active) {
       active.scrollIntoView({ block: "center", behavior: "smooth" })
     }
@@ -59,15 +59,12 @@ export const Lyric = (props: LyricProps) => {
     scrollActive()
   })
   return (
-    <Show
-      when={lyrics()}
-      fallback={<div class="aper-lyric-none">No lyric yet.</div>}
-    >
+    <Show when={lyrics()} fallback={<div class="none">No lyric yet.</div>}>
       <For each={lyrics()!.scripts}>
         {(item, i) => (
           <div
-            class={clsx("aper-lyric-item", {
-              "aper-lyric-item-active": activeIndex() === i(),
+            class={clsx("item", {
+              active: activeIndex() === i(),
             })}
           >
             {item.text}

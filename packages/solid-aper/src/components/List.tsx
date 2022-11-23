@@ -13,8 +13,8 @@ export const List = (props: ListProps) => {
       <For each={props.audios}>
         {(audio, index) => (
           <div
-            class={clsx("aper-list-item", {
-              "aper-list-playing": index() === props.playIndex,
+            class={clsx("item", {
+              "playing": index() === props.playIndex,
             })}
             onClick={() => {
               props.playIndex !== index() && props.onPlayIndexChange?.(index())

@@ -12,6 +12,7 @@ const App: Component = () => {
         "align-items": "center",
         padding: "20px",
         "box-sizing": "border-box",
+        // background: "gray",
       }}
     >
       <div
@@ -24,12 +25,14 @@ const App: Component = () => {
         <Aper
           // autoplay
           debug
+          defaultCover="http://localhost:5244/d/avatar.svg"
           audios={[
             {
               name: "南山忆",
               url: "http://localhost:5244/d/%E5%8D%97%E5%B1%B1%E5%BF%86.mp3",
               artist: "许嵩",
               lrc: "http://localhost:5244/d/%E5%8D%97%E5%B1%B1%E5%BF%86.lrc",
+              cover: "http://localhost:5244/d/avatar.svg",
             },
             {
               name: "少女",

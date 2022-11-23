@@ -11,7 +11,7 @@ export const Slider = (props: SliderProps) => {
         min="0"
         max="100"
         value={props.value}
-        onChange={(e) => {
+        onInput={(e) => {
           props.onChange?.(parseInt(e.currentTarget.value))
         }}
       />

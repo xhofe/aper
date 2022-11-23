@@ -47,17 +47,24 @@ export const Aper = (props: AperProps) => {
   const onPlayIndexChange = (index: number) => {
     index = (index + props.audios.length) % props.audios.length
     setStore("playIndex", index)
+    setStore("status", "loading")
     player.skipTo(index)
     props.onPlayIndexChange?.(index)
   }
   player.onStep((e) => {
     setStore("seek", e.seek)
+    if (e.playing) {
+      setStore("status", "play")
+    }
   })
   player.on("pause", () => {
     setStore("status", "pause")
   })
   player.on("load", () => {
     console.log("load")
+  })
+  player.on("seek", () => {
+    setStore("status", "loading")
   })
   player.on("end", () => {
     switch (props.loop) {

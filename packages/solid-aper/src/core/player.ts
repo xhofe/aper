@@ -2,7 +2,11 @@ import { Howl, HowlCallback, HowlErrorCallback } from "howler"
 import { Audio } from ".."
 import { formatTime } from ".."
 
-type StepEvent = (e: { seek: number; percent: number }) => void
+type StepEvent = (e: {
+  seek: number
+  percent: number
+  playing: boolean
+}) => void
 type PlayEvent = (e: { index: number; audio: Audio; howl: Howl }) => void
 export interface PlayerOptions {
   audios: Audio[]
@@ -23,7 +27,7 @@ export class Player {
     }[]
   } = {}
   interval?: number
-  timeout: number = 1000
+  timeout: number = 200
   index: number = 0
   constructor(options: PlayerOptions) {
     this.playlist = options.audios
@@ -185,12 +189,14 @@ export class Player {
     // const time = self.formatTime(Math.round(seek))
     const percent = (seek / sound?.duration()!) * 100 ?? 0
     // call step events
-    self.stepEvents.forEach((e) => e({ seek, percent }))
+    self.stepEvents.forEach((e) =>
+      e({ seek, percent, playing: sound?.playing() ?? false })
+    )
     // If the sound is still playing, continue stepping.
-    if (!sound?.playing()) {
-      // requestAnimationFrame(self.step.bind(self))
-      clearInterval(self.interval)
-    }
+    // if (!sound?.playing()) {
+    //   // requestAnimationFrame(self.step.bind(self))
+    //   clearInterval(self.interval)
+    // }
   }
 
   onStep(e: StepEvent) {

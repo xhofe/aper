@@ -4,12 +4,11 @@ import clsx from "clsx"
 import { Audio } from ".."
 import { Control, List, Lyric } from "."
 import { Player } from ".."
-
 export interface AperProps {
   audios: Audio[]
   defaultPlayIndex?: number
   defaultCover?: string
-  loop?: "list" | "random" | "one"
+  loop?: "list" | "random" | "single"
   autoplay?: boolean
   defaultVolume?: number
   class?: string
@@ -25,6 +24,7 @@ export type Store = {
   volume: number
   duration: number
   status: "play" | "pause" | "loading"
+  loop: AperProps["loop"]
 }
 
 // only show interface, do not handle logic
@@ -35,6 +35,7 @@ export const Aper = (props: AperProps) => {
     duration: 0,
     status: "pause",
     volume: props.initialVolume ?? 0.5,
+    loop: props.loop ?? "list",
   })
   const player = new Player({
     audios: props.audios,
@@ -50,6 +51,10 @@ export const Aper = (props: AperProps) => {
     setStore("status", "loading")
     player.skipTo(index)
     props.onPlayIndexChange?.(index)
+  }
+  const onVolumeChange = (val: number) => {
+    player.volume(val)
+    setStore("volume", val)
   }
   player.onStep((e) => {
     setStore("seek", e.seek)
@@ -67,16 +72,24 @@ export const Aper = (props: AperProps) => {
     setStore("status", "loading")
   })
   player.on("end", () => {
-    switch (props.loop) {
+    switch (store.loop) {
       case "list":
         onPlayIndexChange(store.playIndex + 1)
         break
       case "random":
         onPlayIndexChange(Math.floor(Math.random() * props.audios.length))
         break
-      case "one":
+      case "single":
         onPlayIndexChange(store.playIndex)
     }
+  })
+  player.on("loaderror", (id, err) => {
+    console.error(err)
+    onPlayIndexChange(store.playIndex + 1)
+  })
+  player.on("playerror", (id, err) => {
+    console.error(err)
+    onPlayIndexChange(store.playIndex + 1)
   })
   return (
     <div class={clsx(props.class, "aper")}>
@@ -97,8 +110,10 @@ export const Aper = (props: AperProps) => {
           defaultCover={props.defaultCover}
           audio={props.audios[store.playIndex]}
           onPlayIndexChange={onPlayIndexChange}
+          onVolumeChange={onVolumeChange}
           player={player}
           store={store}
+          setStore={setStore}
         />
       </div>
     </div>

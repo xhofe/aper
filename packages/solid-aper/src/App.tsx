@@ -32,7 +32,6 @@ const App: Component = () => {
               url: "http://localhost:5244/d/%E5%8D%97%E5%B1%B1%E5%BF%86.mp3",
               artist: "许嵩",
               lrc: "http://localhost:5244/d/%E5%8D%97%E5%B1%B1%E5%BF%86.lrc",
-              cover: "http://localhost:5244/d/avatar.svg",
             },
             {
               name: "少女",

@@ -36,9 +36,10 @@ export const Control = (props: ControlProps) => {
       <div class="progress">
         <div class="time">{formatTime(props.store.seek)}</div>
         <Slider
-          value={(props.store.seek / props.store.duration) * 100}
+          value={props.store.seek}
+          max={props.store.duration}
           onChange={(val) => {
-            props.player.seek(val / 100)
+            props.player.seek(val / props.store.duration)
           }}
         />
         <div class="time">{formatTime(props.store.duration)}</div>

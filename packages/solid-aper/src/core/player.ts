@@ -98,7 +98,9 @@ export class Player {
       sound = data.howl = new Howl({
         src: [data.url],
         html5: true, // Force to HTML5 so that the audio can stream in (best for large files).
-        onplay() {},
+        onplay() {
+          self.resetInterval()
+        },
         onload() {},
         onend() {},
         onpause() {},
@@ -210,11 +212,11 @@ export class Player {
     var self = this
     self.interval && clearInterval(self.interval)
     self.interval = window.setInterval(() => {
-      self.step()
+      self._step()
     }, self.timeout)
   }
 
-  step() {
+  _step() {
     this.debug && console.log("step")
     var self = this
     // Get the Howl we want to manipulate.
@@ -252,10 +254,10 @@ export class Player {
   on(event: "step", callback: StepEvent): this
   on(event: keyof Event, callback: Event[keyof Event]): this {
     this.debug && console.log("on", event)
-    this.events[event] = {
-      callback: callback,
+    this.events[event].push({
+      callback: callback as any,
       once: false,
-    } as any
+    })
     return this
   }
   once(event: "load", callback: () => void): this
@@ -276,10 +278,10 @@ export class Player {
   ): this
   once(event: keyof Event, callback: Event[keyof Event]): this {
     this.debug && console.log("once", event)
-    this.events[event] = {
-      callback: callback,
+    this.events[event].push({
+      callback: callback as any,
       once: true,
-    } as any
+    })
     return this
   }
   off(event: "load", callback: () => void): this

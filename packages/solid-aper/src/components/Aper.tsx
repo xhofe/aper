@@ -42,6 +42,7 @@ export const Aper = (props: AperProps) => {
     debug: props.debug,
   })
   player.on("play", () => {
+    console.log("---------Aper play")
     setStore("status", "play")
     setStore("duration", player.howl.duration())
   })

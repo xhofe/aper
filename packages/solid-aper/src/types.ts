@@ -1,4 +1,3 @@
-import { Howl } from "howler"
 export interface Audio {
   name: string
   url: string
@@ -6,5 +5,4 @@ export interface Audio {
   cover?: string
   lyric?: string
   lrc?: string
-  howl?: Howl
 }

@@ -40,10 +40,16 @@ export const Aper = (props: AperProps) => {
   const player = new Player({
     audios: props.audios,
     debug: props.debug,
-    onPlay: ({ howl }) => {
-      setStore("duration", howl.duration())
+  })
+  player.on("play", () => {
+    setStore("status", "play")
+    setStore("duration", player.howl.duration())
+  })
+  player.on("step", (e) => {
+    setStore("seek", e.seek)
+    if (e.playing) {
       setStore("status", "play")
-    },
+    }
   })
   const onPlayIndexChange = (index: number) => {
     index = (index + props.audios.length) % props.audios.length
@@ -56,12 +62,6 @@ export const Aper = (props: AperProps) => {
     player.volume(val)
     setStore("volume", val)
   }
-  player.onStep((e) => {
-    setStore("seek", e.seek)
-    if (e.playing) {
-      setStore("status", "play")
-    }
-  })
   player.on("pause", () => {
     setStore("status", "pause")
   })

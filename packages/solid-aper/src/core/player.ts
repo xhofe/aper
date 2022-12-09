@@ -1,31 +1,78 @@
 import { Howl, HowlCallback, HowlErrorCallback } from "howler"
 import { Audio } from ".."
-import { formatTime } from ".."
 
 type StepEvent = (e: {
   seek: number
   percent: number
   playing: boolean
 }) => void
-type PlayEvent = (e: { index: number; audio: Audio; howl: Howl }) => void
+
+const HowlEvents = [
+  "load",
+  "loaderror",
+  "playerror",
+  "play",
+  "end",
+  "pause",
+  "stop",
+  "mute",
+  "volume",
+  "rate",
+  "seek",
+  "fade",
+  "unlock",
+] as const
+
+type Event = {
+  // howl events
+  load: () => void
+  loaderror: HowlErrorCallback
+  playerror: HowlErrorCallback
+  play: HowlCallback
+  end: HowlCallback
+  pause: HowlCallback
+  stop: HowlCallback
+  mute: HowlCallback
+  volume: HowlCallback
+  rate: HowlCallback
+  seek: HowlCallback
+  fade: HowlCallback
+  unlock: HowlCallback
+  // player events
+  step: StepEvent
+}
+
+type Events = {
+  [K in keyof Event]: {
+    callback: Event[K]
+    once: boolean
+  }[]
+}
+
 export interface PlayerOptions {
   audios: Audio[]
   debug?: boolean
-  onPlay?: PlayEvent
 }
 export class Player {
   debug: boolean
-  playlist: Audio[]
+  playlist: (Audio & { howl?: Howl })[]
   options: PlayerOptions
-  stepEvents: StepEvent[] = []
-  playEvents: PlayEvent[] = []
-  howlEvents: {
-    [event: string]: {
-      callback: HowlCallback | HowlErrorCallback
-      once: boolean
-      id?: number
-    }[]
-  } = {}
+  events: Events = {
+    load: [],
+    loaderror: [],
+    playerror: [],
+    play: [],
+    end: [],
+    pause: [],
+    stop: [],
+    mute: [],
+    volume: [],
+    rate: [],
+    seek: [],
+    fade: [],
+    unlock: [],
+    step: [],
+  }
   interval?: number
   timeout: number = 200
   index: number = 0
@@ -33,7 +80,6 @@ export class Player {
     this.playlist = options.audios
     this.debug = options.debug ?? false
     this.options = options
-    options.onPlay && this.playEvents.push(options.onPlay)
   }
   play(index?: number) {
     this.debug && console.log("play", index)
@@ -52,13 +98,7 @@ export class Player {
       sound = data.howl = new Howl({
         src: [data.url],
         html5: true, // Force to HTML5 so that the audio can stream in (best for large files).
-        onplay() {
-          self.playEvents.forEach((e) =>
-            e({ index: index!, audio: data, howl: sound })
-          )
-          // Start updating the progress of the track.
-          self.resetInterval()
-        },
+        onplay() {},
         onload() {},
         onend() {},
         onpause() {},
@@ -68,19 +108,15 @@ export class Player {
           self.resetInterval()
         },
       })
-      for (const event in self.howlEvents) {
-        self.howlEvents[event].forEach((e) => {
-          if (e.once) {
-            sound.once(event, e.callback, e.id)
-          } else {
-            sound.on(event, e.callback, e.id)
-          }
+      for (const key in HowlEvents) {
+        const event = HowlEvents[key]
+        sound.on(event, (...args: any[]) => {
+          self._emit(event, ...args)
         })
       }
     }
     // Begin playing the sound.
     !sound.playing() && sound.play()
-
     // Keep track of the index we are currently playing.
     self.index = index
   }
@@ -189,28 +225,15 @@ export class Player {
     // const time = self.formatTime(Math.round(seek))
     const percent = (seek / sound?.duration()!) * 100 ?? 0
     // call step events
-    self.stepEvents.forEach((e) =>
-      e({ seek, percent, playing: sound?.playing() ?? false })
-    )
-    // If the sound is still playing, continue stepping.
-    // if (!sound?.playing()) {
-    //   // requestAnimationFrame(self.step.bind(self))
-    //   clearInterval(self.interval)
-    // }
+    self._emit("step", { seek, percent, playing: sound?.playing() ?? false })
   }
 
-  onStep(e: StepEvent) {
-    this.stepEvents.push(e)
+  get howl() {
+    return this.playlist[this.index].howl!
   }
-  offStep(e: StepEvent) {
-    this.stepEvents = this.stepEvents.filter((f) => f !== e)
-  }
-  on(event: "load", callback: () => void, id?: number): this
-  on(
-    event: "loaderror" | "playerror",
-    callback: HowlErrorCallback,
-    id?: number
-  ): this
+
+  on(event: "load", callback: () => void): this
+  on(event: "loaderror" | "playerror", callback: HowlErrorCallback): this
   on(
     event:
       | "play"
@@ -226,35 +249,17 @@ export class Player {
     callback: HowlCallback,
     id?: number
   ): this
-  on(
-    event: string,
-    callback: HowlCallback | HowlErrorCallback,
-    id?: number
-  ): this
-  on(
-    event: string,
-    callback: HowlCallback | HowlErrorCallback,
-    id?: number
-  ): this {
+  on(event: "step", callback: StepEvent): this
+  on(event: keyof Event, callback: Event[keyof Event]): this {
     this.debug && console.log("on", event)
-    var self = this
-    self.playlist[self.index].howl?.on(event, callback, id)
-    if (!self.howlEvents[event]) {
-      self.howlEvents[event] = []
-    }
-    self.howlEvents[event].push({
-      callback,
-      id,
+    this.events[event] = {
+      callback: callback,
       once: false,
-    })
-    return self
+    } as any
+    return this
   }
-  once(event: "load", callback: () => void, id?: number): this
-  once(
-    event: "loaderror" | "playerror",
-    callback: HowlErrorCallback,
-    id?: number
-  ): this
+  once(event: "load", callback: () => void): this
+  once(event: "loaderror" | "playerror", callback: HowlErrorCallback): this
   once(
     event:
       | "play"
@@ -267,38 +272,18 @@ export class Player {
       | "seek"
       | "fade"
       | "unlock",
-    callback: HowlCallback,
-    id?: number
+    callback: HowlCallback
   ): this
-  once(
-    event: string,
-    callback: HowlCallback | HowlErrorCallback,
-    id?: number
-  ): this
-  once(
-    event: string,
-    callback: HowlCallback | HowlErrorCallback,
-    id?: number
-  ): this {
+  once(event: keyof Event, callback: Event[keyof Event]): this {
     this.debug && console.log("once", event)
-    var self = this
-    self.playlist[self.index].howl?.once(event, callback, id)
-    if (!self.howlEvents[event]) {
-      self.howlEvents[event] = []
-    }
-    self.howlEvents[event].push({
-      callback,
-      id,
+    this.events[event] = {
+      callback: callback,
       once: true,
-    })
-    return self
+    } as any
+    return this
   }
-  off(event: "load", callback?: () => void, id?: number): this
-  off(
-    event: "loaderror" | "playerror",
-    callback?: HowlErrorCallback,
-    id?: number
-  ): this
+  off(event: "load", callback: () => void): this
+  off(event: "loaderror" | "playerror", callback: HowlErrorCallback): this
   off(
     event:
       | "play"
@@ -311,27 +296,26 @@ export class Player {
       | "seek"
       | "fade"
       | "unlock",
-    callback?: HowlCallback,
-    id?: number
+    callback: HowlCallback
   ): this
-  off(
-    event?: string,
-    callback?: HowlCallback | HowlErrorCallback,
-    id?: number
-  ): this
-  off(
-    event?: string,
-    callback?: HowlCallback | HowlErrorCallback,
-    id?: number
-  ): this {
+  off(event: keyof Event, callback: Event[keyof Event]): this {
     this.debug && console.log("off", event)
-    var self = this
-    self.playlist[self.index].howl?.off(event, callback, id)
-    if (event) {
-      self.howlEvents[event] = self.howlEvents[event].filter((e) => {
-        return e.callback !== callback && e.id !== id
-      })
+    this.events[event] = (this.events[event] as any).filter((e: any) => {
+      return e.callback !== callback
+    })
+    return this
+  }
+  _emit(event: keyof Event, ...args: any[]) {
+    this.debug && console.log("_emit", event)
+    const self = this
+    const events = self.events[event]
+    for (let i = events.length - 1; i >= 0; i--) {
+      const e = events[i]
+      const fn = e.callback as any
+      fn(...args)
+      if (e.once) {
+        self.off(event as any, e.callback as any)
+      }
     }
-    return self
   }
 }

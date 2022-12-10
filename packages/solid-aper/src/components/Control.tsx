@@ -91,7 +91,17 @@ export const Control = (props: ControlProps) => {
         </div>
         <div class="settings">
           <div class="volume">
-            <button class="btn">
+            <button
+              class="btn"
+              onClick={() => {
+                if (props.store.volume === 0) {
+                  props.onVolumeChange?.(lastVolume)
+                } else {
+                  lastVolume = props.store.volume
+                  props.onVolumeChange?.(0)
+                }
+              }}
+            >
               <Dynamic
                 component={
                   props.store.volume === 0
@@ -99,14 +109,6 @@ export const Control = (props: ControlProps) => {
                     : MingcuteVolumeFill
                 }
                 size="100%"
-                onClick={() => {
-                  if (props.store.volume === 0) {
-                    props.onVolumeChange?.(lastVolume)
-                  } else {
-                    lastVolume = props.store.volume
-                    props.onVolumeChange?.(0)
-                  }
-                }}
               />
             </button>
             <Slider
@@ -117,7 +119,14 @@ export const Control = (props: ControlProps) => {
             />
           </div>
           <div class="loop">
-            <button class="btn">
+            <button
+              class="btn"
+              onClick={() => {
+                const index = loop.indexOf(props.store.loop!)
+                const next = loop[(index + 1) % loop.length]
+                props.setStore("loop", next)
+              }}
+            >
               <Dynamic
                 component={
                   props.store.loop === "list"
@@ -127,11 +136,6 @@ export const Control = (props: ControlProps) => {
                     : PepiconsMusicNoteSingle
                 }
                 size="100%"
-                onClick={() => {
-                  const index = loop.indexOf(props.store.loop!)
-                  const next = loop[(index + 1) % loop.length]
-                  props.setStore("loop", next)
-                }}
               />
             </button>
           </div>

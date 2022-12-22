@@ -19,6 +19,7 @@ export const Slider = (props: SliderProps) => {
         onInput={(e) => {
           props.onChange?.(parseInt(e.currentTarget.value))
         }}
+        style={{ "--range": props.value * 100 / (merged.max - merged.min) + "%" }}
       />
     </div>
   )

@@ -42,7 +42,6 @@ export const Aper = (props: AperProps) => {
     debug: props.debug,
   })
   player.on("play", () => {
-    console.log("---------Aper play")
     setStore("status", "play")
     setStore("duration", player.howl.duration())
   })
@@ -72,6 +71,12 @@ export const Aper = (props: AperProps) => {
   player.on("seek", () => {
     setStore("status", "loading")
   })
+  player.on("loaderror", (_, e) => {
+    console.log("load error", e)
+  })
+  player.on("playerror", (_, e) => {
+    console.log("play error", e)
+  })
   player.on("end", () => {
     switch (store.loop) {
       case "list":
@@ -93,7 +98,12 @@ export const Aper = (props: AperProps) => {
     onPlayIndexChange(store.playIndex + 1)
   })
   return (
-    <div class={clsx(props.class, "aper")}>
+    <div
+      class={clsx(props.class, "aper")}
+      style={{
+        "--aper-color": props.mainColor ?? "#6366f1",
+      }}
+    >
       <div class="list-lyric">
         <div class="list">
           <List

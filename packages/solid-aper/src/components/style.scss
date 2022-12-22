@@ -173,7 +173,10 @@
       appearance: none !important;
       width: 100%;
       height: 3px;
-      background: var(--aper-color);
+      background: -webkit-linear-gradient(var(--aper-color), var(--aper-color))
+          no-repeat,
+        var(--hover-color);
+      background-size: var(--range) 100%;
       border-radius: 3px;
       border: none;
       outline: none;

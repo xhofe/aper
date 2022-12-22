@@ -1,4 +1,4 @@
-import { Aper as SolidAper, Audio } from "solid-aper"
+import { Aper as SolidAper, Audio, Player } from "solid-aper"
 import { MountableElement, render } from "solid-js/web"
 
 export interface Options {
@@ -7,6 +7,7 @@ export interface Options {
 }
 
 class Aper {
+  player?: Player
   constructor(options: Options) {
     render(() => <SolidAper audios={options.audios} />, options.container)
   }

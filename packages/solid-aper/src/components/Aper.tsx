@@ -16,6 +16,7 @@ export interface AperProps {
   onPlayIndexChange?: (index: number) => void
   debug?: boolean
   initialVolume?: number
+  getPlayerInstance?: (player: Player) => void
 }
 
 export type Store = {
@@ -41,6 +42,7 @@ export const Aper = (props: AperProps) => {
     audios: props.audios,
     debug: props.debug,
   })
+  props.getPlayerInstance?.(player)
   player.on("play", () => {
     setStore("status", "play")
     setStore("duration", player.howl.duration())

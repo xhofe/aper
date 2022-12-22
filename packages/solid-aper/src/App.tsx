@@ -12,8 +12,8 @@ const App: Component = () => {
         "align-items": "center",
         padding: "20px",
         "box-sizing": "border-box",
-        background: "#111",
-        color: "#fff",
+        // background: "#111",
+        // color: "#fff",
       }}
     >
       <div
@@ -26,7 +26,7 @@ const App: Component = () => {
         <Aper
           // autoplay
           debug
-          mainColor="#f00"
+          mainColor="#ADDDA9"
           defaultCover="https://jsd.nn.ci/gh/Xhofe/Xhofe/avatar/avatar.svg"
           audios={[
             // {

@@ -4,7 +4,12 @@ import dts from "vite-plugin-dts"
 import { resolve } from "path"
 
 export default defineConfig({
-  plugins: [solidPlugin(), dts({ entryRoot: resolve(__dirname, "src") })],
+  plugins: [
+    solidPlugin(),
+    dts({
+      entryRoot: resolve(__dirname, "src")
+    }),
+  ],
   server: {
     port: 3000,
   },

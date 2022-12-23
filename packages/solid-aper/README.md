@@ -1,34 +1,65 @@
-## Usage
+<p>
+  <img width="100%" src="https://assets.solidjs.com/banner?project=solid-aper" alt="solid-aper">
+</p>
 
-Those templates dependencies are maintained via [pnpm](https://pnpm.io) via `pnpm up -Lri`.
+# solid-aper
 
-This is the reason you see a `pnpm-lock.yaml`. That being said, any package manager will work. This file can be safely be removed once you clone a template.
+🎵 A simple music player built with [solid.js](https://solidjs.com) and [howler.js](https://howlerjs.com/).
+
+[![release](https://github.com/Xhofe/aper/actions/workflows/release.yml/badge.svg)](https://github.com/Xhofe/solid-aper/actions/workflows/release.yml)
+[![npm](https://img.shields.io/npm/dm/solid-aper.svg)](https://www.npmjs.com/package/solid-aper)
+[![npm](https://img.shields.io/npm/v/solid-aper.svg)](https://www.npmjs.com/package/solid-aper)
+[![license](https://img.shields.io/github/license/Xhofe/aper.svg)](https://github.com/Xhofe/aper/blob/main/LICENSE)
+[![sponsor](https://img.shields.io/badge/%24-sponsor-F87171.svg)](https://sp.nn.ci/)
+
+## Installation
 
 ```bash
-$ npm install # or pnpm install or yarn install
+pnpm add solid-aper
 ```
 
-### Learn more on the [Solid Website](https://solidjs.com) and come chat with us on our [Discord](https://discord.com/invite/solidjs)
+## Demo
 
-## Available Scripts
+<https://xhofe.github.io/aper/>
 
-In the project directory, you can run:
+## Usage
 
-### `npm dev` or `npm start`
+```ts
+import type { Component } from "solid-js"
+import { Aper } from "solid-aper"
+import "solid-aper/dist/style.css"
 
-Runs the app in the development mode.<br>
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+const App: Component = () => {
+  return (
+    <div
+      style={{
+        width: "100vw",
+        height: "100vh",
+        display: "flex",
+        "justify-content": "center",
+        "align-items": "center",
+        padding: "20px",
+        "box-sizing": "border-box",
+      }}
+    >
+      <Aper
+        debug
+        rememberVolume
+        mainColor="#ADDDA9"
+        defaultCover="https://jsd.nn.ci/gh/Xhofe/Xhofe/avatar/avatar.svg"
+        audios={[
+          {
+            name: "name",
+            url: "https://demo/name.flac",
+            artist: "artist",
+            lrc: "https://demo/name.lrc",
+          },
+          ...
+        ]}
+      />
+    </div>
+  )
+}
 
-The page will reload if you make edits.<br>
-
-### `npm run build`
-
-Builds the app for production to the `dist` folder.<br>
-It correctly bundles Solid in production mode and optimizes the build for the best performance.
-
-The build is minified and the filenames include the hashes.<br>
-Your app is ready to be deployed!
-
-## Deployment
-
-You can deploy the `dist` folder to any static host provider (netlify, surge, now, etc.)
+export default App
+```

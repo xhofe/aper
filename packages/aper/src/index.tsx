@@ -1,4 +1,5 @@
-import { Aper as SolidAper, AperProps, Audio, Player } from "solid-aper"
+import { Aper as SolidAper, AperProps, Player } from "solid-aper"
+import 'solid-aper/dist/style.css'
 import { createSignal, Show } from "solid-js"
 import { MountableElement, render } from "solid-js/web"
 

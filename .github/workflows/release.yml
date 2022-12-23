@@ -26,7 +26,6 @@ jobs:
 
       - name: Copy README.md
         run: |
-          cp ./README.md ./packages/solid-aper/README.md
           cp ./README.md ./packages/aper/README.md
 
       - name: Change version

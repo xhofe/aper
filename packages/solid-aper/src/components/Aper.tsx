@@ -52,6 +52,9 @@ export const Aper = (props: AperProps) => {
   })
   player.volume(store.volume)
   props.getPlayerInstance?.(player)
+  if (props.autoplay) {
+    player.play()
+  }
   player.on("play", () => {
     setStore("status", "play")
     setStore("err", undefined)

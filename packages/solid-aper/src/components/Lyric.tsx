@@ -1,4 +1,11 @@
-import { createEffect, createMemo, createSignal, For, Show } from "solid-js"
+import {
+  createEffect,
+  createMemo,
+  createSignal,
+  For,
+  Match,
+  Switch,
+} from "solid-js"
 import { Audio } from ".."
 import lrcParser from "lrc-parser-ts"
 import clsx from "clsx"
@@ -17,7 +24,10 @@ type Lyrics = {
   scripts: Array<Sentence>
 }
 
-export type LyricProps = Pick<Audio, "lrc" | "lyric"> & { seek: number }
+export type LyricProps = Pick<Audio, "lrc" | "lyric"> & {
+  seek: number
+  err?: string
+}
 
 export const Lyric = (props: LyricProps) => {
   const [lyrics, setLyrics] = createSignal<Lyrics>()
@@ -59,18 +69,23 @@ export const Lyric = (props: LyricProps) => {
     scrollActive()
   })
   return (
-    <Show when={lyrics()} fallback={<div class="none">No lyric yet.</div>}>
-      <For each={lyrics()!.scripts}>
-        {(item, i) => (
-          <div
-            class={clsx("item", {
-              active: activeIndex() === i(),
-            })}
-          >
-            {item.text}
-          </div>
-        )}
-      </For>
-    </Show>
+    <Switch fallback={<div class="err">No lyric yet.</div>}>
+      <Match when={props.err}>
+        <div class="err">{props.err}</div>
+      </Match>
+      <Match when={lyrics()}>
+        <For each={lyrics()!.scripts}>
+          {(item, i) => (
+            <div
+              class={clsx("item", {
+                active: activeIndex() === i(),
+              })}
+            >
+              {item.text}
+            </div>
+          )}
+        </For>
+      </Match>
+    </Switch>
   )
 }

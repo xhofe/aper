@@ -10,12 +10,12 @@ export interface AperProps {
   defaultCover?: string
   loop?: "list" | "random" | "single"
   autoplay?: boolean
-  defaultVolume?: number
   class?: string
   mainColor?: string
   onPlayIndexChange?: (index: number) => void
   debug?: boolean
-  initialVolume?: number
+  defaultVolume?: number
+  rememberVolume?: boolean
   getPlayerInstance?: (player: Player) => void
 }
 
@@ -26,25 +26,35 @@ export type Store = {
   duration: number
   status: "play" | "pause" | "loading"
   loop: AperProps["loop"]
+  err?: string
 }
 
 // only show interface, do not handle logic
 export const Aper = (props: AperProps) => {
+  let volume = props.defaultVolume ?? 0.5
+  if (props.rememberVolume) {
+    const v = localStorage.getItem("aper-volume")
+    if (v) {
+      volume = parseFloat(v)
+    }
+  }
   const [store, setStore] = createStore<Store>({
     playIndex: props.defaultPlayIndex ?? 0,
     seek: 0,
     duration: 0,
     status: "pause",
-    volume: props.initialVolume ?? 0.5,
+    volume: volume,
     loop: props.loop ?? "list",
   })
   const player = new Player({
     audios: props.audios,
     debug: props.debug,
   })
+  player.volume(store.volume)
   props.getPlayerInstance?.(player)
   player.on("play", () => {
     setStore("status", "play")
+    setStore("err", undefined)
     setStore("duration", player.howl.duration())
   })
   player.on("step", (e) => {
@@ -63,6 +73,9 @@ export const Aper = (props: AperProps) => {
   const onVolumeChange = (val: number) => {
     player.volume(val)
     setStore("volume", val)
+    if (props.rememberVolume) {
+      localStorage.setItem("aper-volume", val.toString())
+    }
   }
   player.on("pause", () => {
     setStore("status", "pause")
@@ -75,9 +88,13 @@ export const Aper = (props: AperProps) => {
   })
   player.on("loaderror", (_, e) => {
     console.log("load error", e)
+    setStore("status", "pause")
+    setStore("err", "Load error")
   })
   player.on("playerror", (_, e) => {
     console.log("play error", e)
+    setStore("status", "pause")
+    setStore("err", "Play error")
   })
   player.on("end", () => {
     switch (store.loop) {
@@ -115,7 +132,11 @@ export const Aper = (props: AperProps) => {
           />
         </div>
         <div class="lyric">
-          <Lyric {...props.audios[store.playIndex]} seek={store.seek} />
+          <Lyric
+            {...props.audios[store.playIndex]}
+            seek={store.seek}
+            err={store.err}
+          />
         </div>
       </div>
       <div class="control">

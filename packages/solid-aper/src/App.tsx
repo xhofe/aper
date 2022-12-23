@@ -26,6 +26,7 @@ const App: Component = () => {
         <Aper
           // autoplay
           debug
+          rememberVolume
           mainColor="#ADDDA9"
           defaultCover="https://jsd.nn.ci/gh/Xhofe/Xhofe/avatar/avatar.svg"
           audios={[

@@ -33,7 +33,7 @@
   },
   "dependencies": {
     "@types/howler": "^2.2.7",
-    "clsx": "^1.2.1",
+    "clsx": "^2.0.0",
     "howler": "^2.2.3",
     "lrc-parser-ts": "^1.0.3",
     "solid-iconify": "^0.0.4",

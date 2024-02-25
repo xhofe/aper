@@ -19,7 +19,7 @@ importers:
       solid-js: 1.6.2
     devDependencies:
       '@types/node': 18.11.9
-      typescript: 4.9.3
+      typescript: 4.9.5
       vite: 3.2.4_@types+node@18.11.9
       vite-plugin-dts: 1.7.0_vite@3.2.4
       vite-plugin-solid: 2.4.0_solid-js@1.6.2+vite@3.2.4
@@ -48,7 +48,7 @@ importers:
     devDependencies:
       '@types/node': 18.11.17
       sass: 1.57.1
-      typescript: 4.9.4
+      typescript: 4.9.5
       vite: 3.2.5_gneikmxcpj2uc2xuqjosnroj4e
       vite-plugin-dts: 1.6.6_vite@3.2.5
       vite-plugin-solid: 2.5.0_solid-js@1.6.6+vite@3.2.5
@@ -61,7 +61,7 @@ importers:
     dependencies:
       aper: link:../../packages/aper
     devDependencies:
-      typescript: 4.9.4
+      typescript: 4.9.5
       vite: 4.0.3
 
   sites/site:
@@ -75,7 +75,7 @@ importers:
       solid-aper: link:../../packages/solid-aper
       solid-js: 1.6.2
     devDependencies:
-      typescript: 4.9.3
+      typescript: 4.9.5
       vite: 3.2.4
       vite-plugin-solid: 2.4.0_solid-js@1.6.2+vite@3.2.4
 
@@ -1102,7 +1102,7 @@ packages:
       normalize-path: 3.0.0
       readdirp: 3.6.0
     optionalDependencies:
-      fsevents: 2.3.2
+      fsevents: 2.3.3
     dev: true
 
   /clsx/1.2.1:
@@ -1668,8 +1668,8 @@ packages:
       universalify: 0.1.2
     dev: true
 
-  /fsevents/2.3.2:
-    resolution: {integrity: sha512-xiqMQR4xAeHTuB9uWm+fFRcIOgKBMiOBP+eXiyT7jsgVCq1bkVygt00oASowB7EdtpOHaaPgKt812P9ab+DDKA==}
+  /fsevents/2.3.3:
+    resolution: {integrity: sha512-5xoDfX+fL7faATnagmWPpbFtwh/R77WmMMqqHGS65C3vvB0YHrgF+B1YmZ3441tMj5n63k0212XNoJwzlhffQw==}
     engines: {node: ^8.16.0 || ^10.6.0 || >=11.0.0}
     os: [darwin]
     requiresBuild: true
@@ -1989,7 +1989,7 @@ packages:
     engines: {node: '>=10.0.0'}
     hasBin: true
     optionalDependencies:
-      fsevents: 2.3.2
+      fsevents: 2.3.3
     dev: true
 
   /rollup/3.8.1:
@@ -1997,7 +1997,7 @@ packages:
     engines: {node: '>=14.18.0', npm: '>=8.0.0'}
     hasBin: true
     optionalDependencies:
-      fsevents: 2.3.2
+      fsevents: 2.3.3
     dev: true
 
   /run-parallel/1.2.0:
@@ -2130,14 +2130,8 @@ packages:
     hasBin: true
     dev: true
 
-  /typescript/4.9.3:
-    resolution: {integrity: sha512-CIfGzTelbKNEnLpLdGFgdyKhG23CKdKgQPOBc+OUNrkJ2vr+KSzsSV5kq5iWhEQbok+quxgGzrAtGWCyU7tHnA==}
-    engines: {node: '>=4.2.0'}
-    hasBin: true
-    dev: true
-
-  /typescript/4.9.4:
-    resolution: {integrity: sha512-Uz+dTXYzxXXbsFpM86Wh3dKCxrQqUcVMxwU54orwlJjOpO3ao8L7j5lH+dWfTwgCwIuM9GQ2kvVotzYJMXTBZg==}
+  /typescript/4.9.5:
+    resolution: {integrity: sha512-1FXk9E2Hm+QzZQ7z+McJiHL4NW1F2EzMu9Nq9i3zAaGqibafqYwCVU6WyWAuyQRRzOlxou8xZSyXLEN8oKj24g==}
     engines: {node: '>=4.2.0'}
     hasBin: true
     dev: true
@@ -2276,7 +2270,7 @@ packages:
       resolve: 1.22.1
       rollup: 2.79.1
     optionalDependencies:
-      fsevents: 2.3.2
+      fsevents: 2.3.3
     dev: true
 
   /vite/3.2.4_@types+node@18.11.9:
@@ -2310,7 +2304,7 @@ packages:
       resolve: 1.22.1
       rollup: 2.79.1
     optionalDependencies:
-      fsevents: 2.3.2
+      fsevents: 2.3.3
     dev: true
 
   /vite/3.2.5_gneikmxcpj2uc2xuqjosnroj4e:
@@ -2345,7 +2339,7 @@ packages:
       rollup: 2.79.1
       sass: 1.57.1
     optionalDependencies:
-      fsevents: 2.3.2
+      fsevents: 2.3.3
     dev: true
 
   /vite/4.0.3:
@@ -2378,7 +2372,7 @@ packages:
       resolve: 1.22.1
       rollup: 3.8.1
     optionalDependencies:
-      fsevents: 2.3.2
+      fsevents: 2.3.3
     dev: true
 
   /vitefu/0.1.1_vite@3.2.4:

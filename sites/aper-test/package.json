@@ -10,7 +10,7 @@
   },
   "devDependencies": {
     "typescript": "^4.9.3",
-    "vite": "^4.0.0"
+    "vite": "^6.0.0"
   },
   "dependencies": {
     "aper": "workspace:^0.0.0"
